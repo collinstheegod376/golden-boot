@@ -1,7 +1,14 @@
 
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+
+@theme {
+  --color-primary-gold: #ffd700;
+  --color-accent-green: #00dc82;
+  --color-accent-red: #ef4444;
+  --color-card-bg: #121214;
+  --color-text-secondary: #9ca3af;
+  --color-secondary: #9ca3af;
+}
 
 :root {
   --bg-color: #000000;

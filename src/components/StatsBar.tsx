@@ -1,32 +1,67 @@
+
 import React from 'react';
 import { useStats } from '../hooks/useStats';
 
 const StatsBar: React.FC = () => {
-  const stats = useStats();
+  const { stats, loading } = useStats();
 
-  const statsList = [
-    { label: 'PLAYERS', value: stats.totalPlayers },
-    { label: 'TOTAL MARKET CAP', value: stats.totalMarketCap },
-    { label: 'TOTAL 24H VOLUME', value: stats.totalVolume24h },
-    { label: 'TOP GAINER', value: stats.topGainer },
-  ];
+  const formatCurrency = (val: number) => {
+    if (val >= 1000000) return `$${(val / 1000000).toFixed(2)}M`;
+    if (val >= 1000) return `$${(val / 1000).toFixed(2)}K`;
+    return `$${val.toFixed(2)}`;
+  };
 
   return (
-    <div className="max-w-7xl mx-auto px-6 py-12">
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-4 border-y border-[#1a1a1a] py-12">
-        {statsList.map((stat, i) => (
-          <div key={i} className="flex flex-col items-center justify-center text-center">
-            <span className="text-3xl md:text-4xl font-black text-primary-gold mb-2 gold-glow">
-              {stat.value}
-            </span>
-            <span className="text-xs font-bold text-text-secondary tracking-widest uppercase">
-              {stat.label}
-            </span>
-          </div>
-        ))}
+    <div className="max-w-7xl mx-auto px-6 py-8">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-8 border-y border-[#1a1a1a] py-12">
+        <StatBox 
+          label="Players" 
+          value={stats.playerCount.toString()} 
+          loading={loading}
+        />
+        <StatBox 
+          label="Total Market Cap" 
+          value={formatCurrency(stats.totalMarketCap)} 
+          loading={loading}
+          isGlow
+        />
+        <StatBox 
+          label="Total 24h Volume" 
+          value={formatCurrency(stats.totalVolume)} 
+          loading={loading}
+          isGlow
+        />
+        <StatBox 
+          label="Top Gainer" 
+          value={stats.topGainer ? stats.topGainer.ticker.toUpperCase() : "---"} 
+          loading={loading}
+          isGlow
+        />
       </div>
     </div>
   );
 };
+
+interface StatBoxProps {
+  label: string;
+  value: string;
+  loading: boolean;
+  isGlow?: boolean;
+}
+
+const StatBox: React.FC<StatBoxProps> = ({ label, value, loading, isGlow }) => (
+  <div className="flex flex-col items-center justify-center text-center">
+    {loading ? (
+      <div className="h-10 w-24 bg-[#121214] animate-pulse rounded mb-2" />
+    ) : (
+      <span className={`text-3xl md:text-4xl font-black font-mono transition-all duration-500 ${isGlow ? 'text-primary-gold gold-glow' : 'text-white'}`}>
+        {value}
+      </span>
+    )}
+    <span className="text-[10px] uppercase tracking-[0.2em] font-bold text-text-secondary mt-2">
+      {label}
+    </span>
+  </div>
+);
 
 export default StatsBar;
