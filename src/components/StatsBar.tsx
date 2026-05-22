@@ -49,19 +49,23 @@ interface StatBoxProps {
   isGlow?: boolean;
 }
 
-const StatBox: React.FC<StatBoxProps> = ({ label, value, loading, isGlow }) => (
-  <div className="flex flex-col items-center justify-center text-center">
-    {loading ? (
-      <div className="h-10 w-24 bg-[#121214] animate-pulse rounded mb-2" />
-    ) : (
-      <span className={`text-3xl md:text-4xl font-black font-mono transition-all duration-500 ${isGlow ? 'text-primary-gold gold-glow' : 'text-white'}`}>
-        {value}
+const StatBox: React.FC<StatBoxProps> = ({ label, value, loading, isGlow }) => {
+  const hasValue = value.trim() !== '' && value !== '---';
+
+  return (
+    <div className="flex flex-col items-center justify-center text-center">
+      {loading && !hasValue ? (
+        <div className="h-10 w-24 bg-[#121214] animate-pulse rounded mb-2" />
+      ) : (
+        <span className={`text-3xl md:text-4xl font-black font-mono transition-all duration-500 ${isGlow ? 'text-primary-gold gold-glow' : 'text-white'}`}>
+          {value}
+        </span>
+      )}
+      <span className="text-[10px] uppercase tracking-[0.2em] font-bold text-text-secondary mt-2">
+        {label}
       </span>
-    )}
-    <span className="text-[10px] uppercase tracking-[0.2em] font-bold text-text-secondary mt-2">
-      {label}
-    </span>
-  </div>
-);
+    </div>
+  );
+};
 
 export default StatsBar;

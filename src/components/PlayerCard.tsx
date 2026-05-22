@@ -11,14 +11,31 @@ interface PlayerCardProps {
 
 const PlayerCard: React.FC<PlayerCardProps> = ({ player }) => {
   const { data: pumpData, loading } = usePumpData(player.ca);
-  const isPositive = player.change24h >= 0;
+  const liveChange = pumpData?.change_24h ?? player.change24h;
+  const isPositive = liveChange >= 0;
+
+  const formatPrice = (value?: number) => {
+    if (!value || value <= 0) return '';
+    return `$${value.toFixed(6)}`;
+  };
+
+  const formatMarketCap = (value?: number) => {
+    if (!value || value <= 0) return '';
+    if (value >= 1000000) return `$${(value / 1000000).toFixed(2)}M`;
+    if (value >= 1000) return `$${(value / 1000).toFixed(2)}K`;
+    return `$${value.toFixed(2)}`;
+  };
 
   // Derive display values with fallbacks and skeletons
-  const displayPrice = pumpData ? `$${(pumpData.usd_market_cap / pumpData.total_supply * 10**6).toFixed(6)}` : player.price;
-  const displayMC = pumpData ? `$${(pumpData.usd_market_cap / 1000).toFixed(2)}K` : player.marketCap;
-  const displayImage = pumpData?.image_uri || player.image || "https://premium.pump.fun/placeholder.png";
-  const displayName = pumpData?.name || player.name || "Loading Player...";
+  const displayPrice = formatPrice(pumpData?.price) || player.price || '$0.000000';
+  const displayMC = formatMarketCap(pumpData?.usd_market_cap) || player.marketCap || '$0.00';
+  const displayImage = pumpData?.image_uri || player.image || '/boot-logo.png';
+  const displayName = pumpData?.name || player.name || 'Player Pending';
   const displayTicker = pumpData?.symbol ? `$${pumpData.symbol}` : (player.ticker || "???");
+  const showImageSkeleton = loading && !pumpData && !player.image;
+  const showNameSkeleton = loading && !pumpData && !player.name;
+  const showPriceSkeleton = loading && !pumpData && !player.price;
+  const showMarketCapSkeleton = loading && !pumpData && !player.marketCap;
 
   const copyToClipboard = () => {
     const ca = player.ca.includes('/') ? player.ca.split('/').pop()?.split('?')[0] : player.ca;
@@ -54,12 +71,16 @@ const PlayerCard: React.FC<PlayerCardProps> = ({ player }) => {
 
       {/* Player Image / Skeleton */}
       <div className="relative aspect-[3/4] overflow-hidden bg-[#121214]">
-        {loading ? (
+        {showImageSkeleton ? (
           <div className="absolute inset-0 bg-[#121214] animate-pulse" />
         ) : (
           <img 
             src={displayImage} 
             alt={displayName} 
+            onError={(event) => {
+              event.currentTarget.onerror = null;
+              event.currentTarget.src = '/boot-logo.png';
+            }}
             className="w-full h-full object-cover object-top grayscale group-hover:grayscale-0 transition-all duration-500 transform group-hover:scale-110"
           />
         )}
@@ -70,7 +91,7 @@ const PlayerCard: React.FC<PlayerCardProps> = ({ player }) => {
       <div className="p-5 flex flex-col flex-1">
         <div className="flex justify-between items-start mb-4">
           <div className="flex-1 pr-2">
-            {loading ? (
+            {showNameSkeleton ? (
               <div className="h-6 w-24 bg-[#121214] animate-pulse rounded mb-2" />
             ) : (
               <h3 className="text-lg font-black text-white leading-tight uppercase truncate">{displayName}</h3>
@@ -82,14 +103,14 @@ const PlayerCard: React.FC<PlayerCardProps> = ({ player }) => {
             animate={{ scale: 1 }}
             className={`px-2 py-1 rounded text-[10px] font-bold ${isPositive ? 'bg-accent-green/20 text-accent-green' : 'bg-accent-red/20 text-accent-red'}`}
           >
-            {isPositive ? '+' : ''}{player.change24h.toFixed(2)}%
+            {isPositive ? '+' : ''}{liveChange.toFixed(2)}%
           </motion.div>
         </div>
 
         <div className="space-y-2 mb-6">
           <div className="flex justify-between text-xs">
             <span className="text-text-secondary">Price</span>
-            {loading ? (
+            {showPriceSkeleton ? (
               <div className="h-4 w-16 bg-[#121214] animate-pulse rounded" />
             ) : (
               <span className="font-mono text-white">{displayPrice || '$0.0000'}</span>
@@ -97,7 +118,7 @@ const PlayerCard: React.FC<PlayerCardProps> = ({ player }) => {
           </div>
           <div className="flex justify-between text-xs">
             <span className="text-text-secondary">Market Cap</span>
-            {loading ? (
+            {showMarketCapSkeleton ? (
               <div className="h-4 w-12 bg-[#121214] animate-pulse rounded" />
             ) : (
               <span className="font-mono text-white">{displayMC || '$0.00K'}</span>

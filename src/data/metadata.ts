@@ -62,7 +62,7 @@ export const METADATA: SiteMetadata = {
     }
   },
   stats: {
-    totalPlayers: 20,
+    totalPlayers: 24,
     totalMarketCap: "$80.51K",
     totalVolume24h: "$150.24K",
     topGainer: "???"
@@ -82,7 +82,7 @@ export const PLAYERS: PlayerData[] = [
     id: 1,
     name: "",
     ticker: "",
-    ca: "GcDk4k8kcmv9sq5YSFgGT7wwKvgsnAWM4uqEiA1csSzQ",
+    ca: "https://pump.fun/coin/9zqre5sRRdFvKqyTyvEd1jcKDRF4g47s7mZSGUnQpump",
     image: "",
     price: "",
     marketCap: "",
@@ -93,16 +93,49 @@ export const PLAYERS: PlayerData[] = [
     id: 2,
     name: "",
     ticker: "",
-    ca: "5UUH9RTDiSpq6HKS6bp4NdU9PNJpXRXuiw6ShBTBhgH2", // Placeholder example
+    ca: "https://pump.fun/coin/NV2RYH954cTJ3ckFUpvfqaQXU4ARqqDH3562nFSpump",
     image: "",
     price: "",
     marketCap: "",
     change24h: 0,
     country: ""
   },
-  // Adding empty slots for the remaining 18 players
-  ...Array.from({ length: 18 }, (_, i) => ({
-    id: i + 3,
+  {
+    id: 3,
+    name: "",
+    ticker: "",
+    ca: "https://pump.fun/coin/FiFMcHnkPxpDfG5HgJs7hNd5NJKDe3JRNfHAGviHpump",
+    image: "",
+    price: "",
+    marketCap: "",
+    change24h: 0,
+    country: ""
+  },
+  {
+    id: 4,
+    name: "",
+    ticker: "",
+    ca: "https://pump.fun/coin/E2JYBdF8fRkxA7PMjqU7Mye1RTCZgj9595JrdHoCpump",
+    image: "",
+    price: "",
+    marketCap: "",
+    change24h: 0,
+    country: ""
+  },
+  {
+    id: 5,
+    name: "",
+    ticker: "",
+    ca: "https://pump.fun/coin/HW99ti9uE9eR3y4CwA2NNY1b3si9PNXvDBsjokXbpTwk",
+    image: "",
+    price: "",
+    marketCap: "",
+    change24h: 0,
+    country: ""
+  },
+  // Adding empty slots for the remaining 20 players
+  ...Array.from({ length: 19 }, (_, i) => ({
+    id: i + 6,
     name: "",
     ticker: "",
     ca: "", // ENTER CA HERE
